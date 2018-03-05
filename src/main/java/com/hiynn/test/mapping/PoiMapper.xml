@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hiynn.test.dao.PoiTestDao">
+    <resultMap id="baseResultMap" type="com.hiynn.test.pojo.JzxManage">
+        <id column="ID" property="id"/>
+        <result column="ID" property="id"/>
+        <result column="NAME" property="name"/>
+        <result column="HEIGHT" property="height"/>
+        <result column="AGE" property="age"/>
+        <result column="BIRTH" property="birth"/>
+    </resultMap>
+
+    <insert id="insertInfoBatch" useGeneratedKeys="false" parameterType="java.util.List">
+        insert into JZX_MANAGE (id,name,height,age,birth)
+        SELECT A.* from
+        (
+        <foreach collection="list" item="item" index="index" separator="UNION ALL">
+            SELECT
+            #{item.id},#{item.name},#{item.height},#{item.age},#{item.birth}
+            FROM dual
+        </foreach>
+        )A
+    </insert>
+
+    <select id="selectApartInfo" resultMap="baseResultMap">
+        select id,name,height,age,birth from JZX_Manage
+    </select>
+
+    <select id="selectApartInfoId" resultMap="baseResultMap">
+        select id,name,height,age,birth from JZX_Manage
+        where id in
+        <foreach item="item" index="index" collection="list" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </select>
+</mapper>
